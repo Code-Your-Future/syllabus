@@ -32,7 +32,7 @@ Now let's say we want to get the *names* of customers who have a reservation *to
 
 From what we know now, we *could* do it like this:
 
-- `SELECT customer_id FROM reservations WHERE check_in_date = '2018/08/19';`
+- `SELECT customer_id FROM reservations WHERE check_in_date = '2017-01-01';`
 - write down the list of customer IDs on paper (e.g. 3, 5, 7)
 - `SELECT * FROM customers WHERE id IN (3, 5, 7);`
 
@@ -43,9 +43,9 @@ This is what a database "JOIN" is. In real life, if you work with databases, you
 Now, we have data that spans two tables - we have reservations with a "customer_id" column that refers to the ID column in the "customers" table.
 
 ```sql
-SELECT reservations.check_in_date, customers.first_name, customers.surname
+SELECT reservations.check_in_date, customers.firstname, customers.surname
 FROM reservations JOIN customers ON reservations.customer_id = customers.id
-WHERE reservations.check_in_date = '2018/08/19';
+WHERE reservations.check_in_date = '2017-01-01';
 ```
 
 Note that:
@@ -56,13 +56,15 @@ Note that:
 
 Let's try the query.
 
-First, go to the `cyf-hotel-db` repo in your terminal and switch to the `class3` branch. Next, run `npm i` and `npm start` to start the server. Then, open a new terminal tab in the `cyf-hotel-db` directory and run `sqlite3 database/database.sqlite` to open SQLite.
+First, go to the `cyf-hotel-db` repo in your terminal and switch to the `class3` branch. Next, run `npm i` and `npm start` to start the server. Then, open a new terminal tab in the `cyf-hotel-db` directory and run "./rebuild":
 
-Now, copy and paste the above `SELECT` query into SQLite. You should get this:
+Now, copy and paste the above `SELECT` query into postgres. You should get something like this:
 
 ```
-2018/08/19|Marie|Niki
-2018/08/19|Anna|Kolen
+    check_in_date    | firstname | surname 
+---------------------+-----------+---------
+ 2017-01-01 00:00:00 | Donald    | Trump
+ 2017-01-01 00:00:00 | Hillary   | Clinton
 ```
 
 
@@ -91,7 +93,7 @@ Now, this guest does a little poking around and he realizes that he can delete h
 DELETE http://localhost:8080/api/reservations/6
 ```
 
-Now, open a new terminal window and run "sqlite3 databases/database.sqlite":
+Now, open a new terminal window and run "./rebuild":
 
 ```
 sqlite> SELECT * FROM reservations;
@@ -133,16 +135,19 @@ generally the order you put them in but there is *no* guarantee it will be in th
 Using 'order by' we can get records back in a specified order:
 
 ```sql
-SELECT reservations.check_in_date, customers.first_name, customers.surname
+SELECT reservations.check_in_date, customers.firstname, customers.surname
 FROM reservations JOIN customers ON reservations.customer_id = customers.id
-WHERE reservations.check_in_date = '2018/08/19' ORDER BY customers.surname;
+WHERE reservations.check_in_date = '2017-01-01' ORDER BY customers.surname;
 ```
 
 This will give the output in a new order:
 
 ```
-2018/08/19|Anna|Kolen
-2018/08/19|Marie|Niki
+    check_in_date    | firstname | surname 
+---------------------+-----------+---------
+ 2017-01-01 00:00:00 | Hillary   | Clinton
+ 2017-01-01 00:00:00 | Evil      | Hackerman
+ 2017-01-01 00:00:00 | Donald    | Trump
 ```
 
 We have Mrs Clinton, Mr Trump and Mr Hackerman staying at the hotel. What order will the reservations be displayed in?
@@ -152,7 +157,7 @@ If we want to get *explicitly* the three of them in ascending order:
 ```sql
 SELECT reservations.check_in_date, customers.first_name, customers.surname
 FROM reservations JOIN customers ON reservations.customer_id = customers.id
-WHERE reservations.check_in_date = '2018/08/19' ORDER BY customers.surname ASC;
+WHERE reservations.check_in_date = '2017-01-01' ORDER BY customers.surname ASC;
 ```
 
 Now, if we want them in descending order:
@@ -160,17 +165,15 @@ Now, if we want them in descending order:
 ```sql
 SELECT reservations.check_in_date, customers.first_name, customers.surname
 FROM reservations JOIN customers ON reservations.customer_id = customers.id
-WHERE reservations.check_in_date = '2018/08/19' ORDER BY customers.surname DESC;
+WHERE reservations.check_in_date = '2017-01-01' ORDER BY customers.surname DESC;
 ```
 
 ```
-Check In Date  First Name  Surname
-------------------------------------
-2018/08/19     Melania     Trump
-2018/08/19     Donald      Trump
-2018/08/19     Colm        Hackerman
-2018/08/19     Bill        Clinton
-2018/08/19     Hillary     Clinton
+    check_in_date    | firstname | surname 
+---------------------+-----------+---------
+ 2017-01-01 00:00:00 | Hillary   | Clinton
+ 2017-01-01 00:00:00 | Evil      | Hackerman
+ 2017-01-01 00:00:00 | Donald    | Trump
 ```
 
 This is just one way the results could come out. They could also come out (e.g. on a different computer, or done at a different time), for instance, like this:
@@ -183,6 +186,15 @@ Check In Date  First Name  Surname
 2018/08/19     Colm        Hackerman
 2018/08/19     Hillary     Clinton
 2018/08/19     Bill        Clinton
+
+
+    check_in_date    | firstname | surname 
+---------------------+-----------+---------
+ 2017-01-01 00:00:00 | Donald    | Trump
+ 2017-01-01 00:00:00 | Melania   | Trump
+ 2017-01-01 00:00:00 | Evil      | Hackerman
+ 2017-01-01 00:00:00 | Hillary   | Clinton
+ 2017-01-01 00:00:00 | Bill      | Clinton
 ```
 
 Note that Donald and Melania and Bill and Hillary are both reversed this time. This is because we said to sort by surname, which it does, but there are no guarantees about what order rows appear in where the surname is the same.

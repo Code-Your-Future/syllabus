@@ -3,7 +3,7 @@
 **What we will learn today?**
 
 * Why we need databases
-* Installing SQLite
+* Installing Postgres
 * Creating a database with SQL and storing data in it.
 * Inserting data into a database using SQL.
 * Retrieving data from a database using SQL.
@@ -19,13 +19,16 @@ TEACHER STORY:
 
 Back in 2013 I used to work for a company that ran hotel wifi for big hotel chain.
 We did at least 4 big brands that you've probably heard of and a whole bunch of others.
-This company had been going for a long time and used to make $8 when, back in the dark ages, you paid $12 for a day of wifi.
+This company had been going for a long time and used to make $8 when, back in the dark
+ages, you paid $12 for a day of wifi.
 
 The code for this system had the notion of "invoices", "wifi enrollments" and "guests" and
 stored data on each of them as well as the links between them. We would store data about
-these things and we would run reports on each and send them to the hotels who would use them to bill guests.
+these things and we would run reports on each and send them to the hotels who would
+use them to bill guests.
 
-All normal so far. Except we would sometimes send reports with invoices which didn't have enrollments, and enrollments which didn't have guests.
+All normal so far. Except we would sometimes send reports with invoices which didn't
+have enrollments, and enrollments which didn't have guests.
 
 Sometimes the amounts on those invoices would rack up to tens even hundreds of thousands of dollars of invoices *without* customers, and the hotel managers were rarely happy:
 
@@ -79,28 +82,64 @@ Long answer: There are two forms of NoSQL.
 once you do and shifting from mongo to an SQL database once you're deep into a project is tricky.
 
 
-#### EXERCISE 1B: INSTALLING SQLITE ON YOUR LAPTOP AND CREATING YOUR FIRST DATABASE
+#### EXERCISE 1B: INSTALLING POSTGRES ON YOUR LAPTOP AND CREATING YOUR FIRST DATABASE
 
-The RDBMS we are going to teach you first is called "sqlite". It's pretty much the industry standard for creating small, self contained database that fits in one file or runs a small website (where small means under 100,000 hits per day). There is more [here](https://www.sqlite.org/whentouse.html) on when it is and is not a good database to use.
+The RDBMS we are going to teach you is called "postgresql" (pronounced postgres-q-l) or
+"postgres". It's one of the most popular free, open source databases and if you end
+up becoming web developers it's highly likely that you will be using it. We will be
+using version 11 although for straightforward databases you will probably not notice
+much of a difference for anything over version 9.
 
-To set up, we do the following:
+### FOR MAC OS USERS:
 
-* Windows: https://sqlite.org/download.html#win32
-* Ubuntu: `sudo apt-get install sqlite3`
-* Mac OS: `brew install sqlite3`
+1. Go to https://postgresapp.com
+2. Go to the Downloads tab
+3. Download the latest version
+4. Open the downloaded file
+5. Drag the app to Applications folder
+6. Got to the Applications folder
+7. Open Postgres
+8. Click the Open button in the popup
+9. Click the Initialize button
+10. Run the following in the terminal:
 
-To run SQLite, open a command prompt and run "sqlite mydatabase.sqlite".
+>> psql -d template1
 
-This should give you a prompt like this:
+You should see:
 
 ```
-sqlite3
-SQLite version 3.11.0 2016-02-15 17:29:24
-Enter ".help" for usage hints.
-sqlite>
+postgres=#
 ```
 
-This is a command prompt where you can run snippets of SQL and load files containing SQL.
+To quit, run "\q".
+
+
+### FOR MAC OS USERS:
+
+To set up on Linux you need to do the following:
+
+>> sudo apt-get install postgresql
+
+>> whoami
+gareth
+
+Replace gareth with whatever your username is, e.g.:
+
+>> sudo -u postgres createuser gareth --superuser --no-password -d
+
+If you run this command
+
+>> psql -d template1
+
+You should have a command prompt like follows:
+
+```
+postgres=#
+```
+
+To quit, run "\q"
+
+
 
 ## LESSON 1C: CREATING A TABLE
 
@@ -109,7 +148,11 @@ The first thing we want to store is customers, since without customers, you don'
 First, open a file in any text editor and put the following in a file called 'hotel.sql':
 
 ```sql
-PRAGMA foreign_keys = ON;
+drop database if exists mydb;
+
+create database mydb;
+
+\connect mydb;
 
 create table customers (
     title varchar,
@@ -122,7 +165,9 @@ insert into customers (title, firstname, surname) values ('Mr', 'Donald', 'Trump
 
 What we have here:
 
-* PRAGMA statement is to set up some relevant settings that we don't need to worry about just yet.
+* Dropping a database - if a database named `mydb` already exists, this removes it so that we can make a new one with that name.
+* Creating a database - this creates a new database that for you to use.
+* Connecting to a database - this tells Postgres to work with our new databse.
 * Creating a table - this creates the *structure* which you can use to put data in. The items are *columns*.
 * Insert into - puts data *into* that structure.
 * 'title varchar' - this means we're creating a column with the name 'title' which holds a 'variable number of characters'. This is pretty much the same thing as a string in javascript.
@@ -130,11 +175,16 @@ What we have here:
 Now, in the command prompt run the following:
 
 ```
-$ sqlite3 -init hotel.sql
+$ psql -f hotel.sql
 ```
 
-Now that the file has been loaded with one table containing one row of data, you can read it back
-out again like this:
+Now the file has been loaded with one table containing one row of data. Open the Postgres command line with the new databse like this:
+
+```
+$ psql -d mydb
+```
+
+Then read the rows of data out like this:
 
 ```sql
 select * from customers;
@@ -143,37 +193,40 @@ select * from customers;
 This should display:
 
 ```
-sqlite> select * from customers;
-Mr|Donald|Trump
+postgres=# select * from customers;
+ title | firstname | surname 
+-------+-----------+---------
+ Mr    | Donald    | Trump
+(1 row)
 ```
-
-**Note**: We are using a in memory database. This means that for each exercise we will be adding sql statements to our `hotel.sql` and then read this file into sqlite3 to create our database, because everytime we close `sqlite3` the database will be deleted and the data will be lost.
 
 
 #### EXERCISE 1C: Create tables and insert data
 
-1. Amend hotel.sql create the database again and add yourselves as *second* customer using INSERT - so you're now staying in a hotel with Donald Trump. Run `select * from customers;` and ensure that you see yourself both as guests.
+1. Amend hotel.sql to create the database again and add yourselves as *second* customer using INSERT - so you're now staying in a hotel with Donald Trump. Run `select * from customers;` and ensure that you see yourself both as guests.
 
-2. Change hotel.sql again to store email addresses from yourself and Donald (donald.trump@whitehouse.gov) and have them displayed on screen. Select everythin agian, and ensure you are both guests.
+2. Change hotel.sql again to store email addresses from yourself and Donald (donald.trump@whitehouse.gov) and have them displayed on screen. Select everything again, and ensure you are both guests.
 
-3. Change hotel.sql again. Add teacher - "Colm OConner" - as your third customer. My email address is "colm.oconner.github@gmail.com".
+3. Change hotel.sql again. Add the CYF mentor "Colm OConner" as your third customer. His email address is "colm.oconner.github@gmail.com".
 
 ## LESSON 1D: Data types and directives
+
+Add this at the end of `hotel.sql`:
 
 ```sql
 create table invoices (
     id                  integer,
-    total               number,
-    invoice_date_time   datetime not null,
-    paid                boolean default 0
+    total               decimal,
+    invoice_date_time   timestamp not null,
+    paid                boolean default false
 );
 
-insert into invoices (id, total, invoice_date_time, paid) values (123, 3444.50, '2017-01-01', 1);
+insert into invoices (id, total, invoice_date_time, paid) values (123, 3444.50, '2017-01-01', true);
 
 insert into invoices (id, total, invoice_date_time) values (124, 3445.50, '2017-01-02');
 ```
 
-And in the command box:
+Run the file, open the Postgres command box, and enter this:
 
 ```sql
 select * from invoices;
@@ -181,15 +234,21 @@ select * from invoices;
 
 What we have here:
 
-* An 'integer', a 'number', a 'datetime' and a 'boolean'. These are all analogous to data types which you have learned about in javascript.
+* An 'integer', a 'decimal', a 'timestamp' and a 'boolean'. These are all analogous to data types which you have learned about in javascript.
 
-* For "paid" which is either yes (`1`) or no (`0`) - we have a default of no (`0`)- it's saying that if you insert data and don't specify 'paid' as a column when you INSERT data, it will assume you meant 'no'.
+* For "paid" which is either yes (`true`) or no (`false`) - we have a default of no (`false`)- it's saying that if you insert data and don't specify 'paid' as a column when you INSERT data, it will assume you meant 'no'.
 
-* For 'invoice_date_time' you must store the data in the form of a combination of date and time. It has a 'not null' constraint which means that you *have* to give a datetime when you insert data, it will refuse to let you insert an invoice without specifying invoice_date_time and refuse to let you explicitly give your invoice_date_time as null.
+* For 'invoice_date_time' you must store the data in the form of a combination of date and time. It has a 'not null' constraint which means that you *have* to give a timestamp when you insert data, it will refuse to let you insert an invoice without specifying invoice_date_time and refuse to let you explicitly give your invoice_date_time as null.
 
-**Note:** For the sake of simplicity we will be using the `YYYY-MM-DD` date format.
+<!-- ![postman-get-1](postman-get-1.png) -->
+<p align="center">
+  <img src="perfect-date.png" display="block" width="85%"/>
+</p>
 
-Further reading on sqlite3 types  [here](https://www.sqlite.org/datatype3.html).
+For the sake of simplicity we will be using the `YYYY-MM-DD` date format.
+
+
+Further reading on Postgres types  [here](https://www.postgresql.org/docs/current/datatype.html).
 
 
 #### EXERCISE 1D : Data types and directives
@@ -212,15 +271,15 @@ Lets go back to the invoices table and add a bunch of data.
 Replace the previous insert statements for invoices with the following ones:
 
 ```sql
-insert into invoices (id, total, invoice_date_time, paid) values (123, 143.50, '2017-01-01', 1);
+insert into invoices (id, total, invoice_date_time, paid) values (123, 143.50, '2017-01-01', true);
 
 insert into invoices (id, total, invoice_date_time) values (124, 250.50, '2017-01-02');
 
 insert into invoices (id, total, invoice_date_time) values (150, 431.50, '2017-01-03');
 
-insert into invoices (id, total, invoice_date_time, paid) values (155, 300.50, '2017-01-04', 1);
+insert into invoices (id, total, invoice_date_time, paid) values (155, 300.50, '2017-01-04', true);
 
-insert into invoices (id, total, invoice_date_time, paid) values (156, 284.35, '2017-01-04', 1);
+insert into invoices (id, total, invoice_date_time, paid) values (156, 284.35, '2017-01-04', true);
 ```
 
 So, if you do a regular query you just get all of the data:
@@ -256,7 +315,7 @@ Write SQL for the following:
 Ok, now we're going to introduce a problem. Let's say a secretary types in a bunch of invoice IDs and values:
 
 ```sql
-insert into invoices (id, total, invoice_date_time, paid) values (323, 143.50, '2017-01-01', 1);
+insert into invoices (id, total, invoice_date_time, paid) values (323, 143.50, '2017-01-01', true);
 
 insert into invoices (id, total, invoice_date_time) values (323, 250.50, '2017-01-02');
 ```
@@ -268,12 +327,12 @@ We solve this problem with something called a "primary key" - what this does is 
 ```sql
 create table invoices (
     id                  integer primary key,
-    total               number,
-    invoice_date_time   datetime not null,
-    paid                boolean default 0
+    total               decimal,
+    invoice_date_time   timestamp not null,
+    paid                boolean default false
 );
 
-insert into invoices (id, total, invoice_date_time, paid) values (323, 143.50, '2017-01-01', 1);
+insert into invoices (id, total, invoice_date_time, paid) values (323, 143.50, '2017-01-01', true);
 ```
 
 Update your hotel.sql file to have the invoices table defined as above.
@@ -281,8 +340,9 @@ Update your hotel.sql file to have the invoices table defined as above.
 Try entering an invoice with ID 323 now, what do you get?
 
 ```sql
-sqlite> insert into invoices (id, total, invoice_date_time) values (323, 250.50, '2017-01-02');
-Error: UNIQUE constraint failed: invoices.id
+mydb=# insert into invoices (id, total, invoice_date_time) values (323, 250.50, '2017-01-02');
+ERROR:  duplicate key value violates unique constraint "invoices_pkey"
+DETAIL:  Key (id)=(323) already exists.
 ```
 
 Now, picking primary keys is a tricky problem. You need to make sure that you pick some kind of identifier which you know will always be *unique*.
@@ -300,24 +360,24 @@ QUESTIONS FOR CLASS:
 
 We still have a problem here. Joe the office manager who is entering invoices doesn't really want to keep coming up with random numbers every time he enters an invoice. Why not just get the database to give us an ID?
 
-We can do that with a magic feature called autoincrementing numbers. You don't specify the ID and the database will just give your row a new ID. What ID will it give it? The ID of the last row plus one.
+We can do that with a magic feature called serial numbers. You don't specify the ID and the database will just give your row a new ID. What ID will it give it? The ID of the last row plus one.
 
 ```sql
 create table invoices (
-    id                  integer primary key autoincrement,
-    total               number,
-    invoice_date_time   datetime not null,
-    paid                boolean default 0
+    id                  serial primary key,
+    total               decimal,
+    invoice_date_time   timestamp not null,
+    paid                boolean default false
 );
 
-insert into invoices (total, invoice_date_time, paid) values (143.50, '2017-01-01', 1);
+insert into invoices (total, invoice_date_time, paid) values (143.50, '2017-01-01', true);
 
 insert into invoices (total, invoice_date_time) values (250.50, '2017-01-02');
 ```
 
 #### EXERCISE 1H : PRIMARY KEYS
 
-1. Update yout hotel.sql file to account for the auto increment ids on the `invoices` table. Meaning, remove the id from the insert, because they should be automatically added now.
+1. Update yout hotel.sql file to account for the serial ids on the `invoices` table. Meaning, remove the id from the insert, because they should be automatically added now.
 
 2. Recreate customer table with a primary key. Bear in mind that you don't have a driver's license or passport ID. Update all the insert statements for `customers` to not specify the id.
 
@@ -329,29 +389,29 @@ Now, as we've seen two tables that have an intrinsic relationship to one another
 
 ```sql
 create table invoices (
-    `id`                  integer primary key autoincrement,
-    `reservation_id`      integer,
-    `total`               number,
-    `invoice_date_time`   datetime not null,
-    `paid`                boolean default 0,
+    id                  serial primary key,
+    reservation_id      integer,
+    total               decimal,
+    invoice_date_time   timestamp not null,
+    paid                boolean default false
 );
 
 create table reservations (
-    `id`                    integer primary key,
-    `customer_id`           integer,
-    `room_id`               integer,
-    `check_in_date`         datetime not null,
-    `check_out_date`,       datetime,
-    `room_price_per_night`  real,
+    id                    serial primary key,
+    customer_id           integer,
+    room_id               integer,
+    check_in_date         timestamp not null,
+    check_out_date        timestamp,
+    room_price_per_night  decimal
 );
 
 insert into reservations (customer_id, room_id, check_in_date, check_out_date, room_price_per_night) values (123, 55, '2017-01-01', '2017-01-02', 100);
 
 insert into reservations (customer_id, room_id, check_in_date, check_out_date, room_price_per_night) values (124, 55, '2017-01-03', '2017-01-05', 100);
 
-insert into invoices (reservation_id, total, invoice_date_time, paid) values (123, 100, '2017-01-03', 1);
+insert into invoices (reservation_id, total, invoice_date_time, paid) values (123, 100, '2017-01-03', true);
 
-insert into invoices (reservation_id, total, invoice_date_time, paid) values (124, 50, '2017-01-06', 0);
+insert into invoices (reservation_id, total, invoice_date_time, paid) values (124, 50, '2017-01-06', false);
 
 insert into invoices (reservation_id, total, invoice_date_time) values (124, 50, '2017-01-06');
 ```
@@ -374,21 +434,21 @@ To fix this problem we place an additional restriction on the data
 ```sql
 
 create table reservations (
-    `id`                    integer primary key,
-    `customer_id`           integer,
-    `room_id`               integer,
-    `check_in_date`         datetime not null,
-    `check_out_date`,       datetime,
-    `room_price_per_night`  real,
+    id                    serial primary key,
+    customer_id           integer,
+    room_id               integer,
+    check_in_date         timestamp not null,
+    check_out_date        timestamp,
+    room_price_per_night  decimal
 );
 
 create table invoices (
-    `id`                            integer primary key autoincrement,
-    `reservation_id`                integer not null,
-    `total`                         number,
-    `invoice_date_time`             datetime not null,
-    `paid`                          boolean default 0,
-    foreign key(reservation_id)     references reservations(id),
+    id                              serial primary key,
+    reservation_id                  integer not null,
+    total                           decimal,
+    invoice_date_time               timestamp not null,
+    paid                            boolean default false,
+    foreign key(reservation_id)     references reservations(id)
 );
 
 ```
@@ -396,16 +456,17 @@ create table invoices (
 Now, if you try to add invoices without a `reservation_id` that really references a reservation entry on the reservations table you'll get this:
 
 ```sql
-insert into invoices (reservation_id, total, invoice_date_time) values (125, 50, '2017-01-06');
-
-Error: FOREIGN KEY constraint failed
+mydb=# insert into invoices (reservation_id, total, invoice_date_time) values (125, 50, '2017-01-06');
+ERROR:  insert or update on table "invoices" violates foreign key constraint "invoices_reservation_id_fkey"
+DETAIL:  Key (reservation_id)=(125) is not present in table "reservations".
 ```
 
 Or, if you try to add an invoice without specifying the `reservation_id` at all:
 
 ```sql
-insert into invoices (total, invoice_date_time) values (50, '2017-01-06');
-Error: NOT NULL constraint failed:
+mydb=# insert into invoices (total, invoice_date_time) values (50, '2017-01-06');
+ERROR:  null value in column "reservation_id" violates not-null constraint
+DETAIL:  Failing row contains (5, null, 50, 2017-01-06 00:00:00, f).
 ```
 
 Note that:
@@ -435,18 +496,18 @@ Let's say that we made a mistake with one of the invoices created above.
 First get the ID of an invoice entered earlier:
 
 ```sql
-select * from invoices where invoice_date_time = '2017-01-01';
+select * from invoices where invoice_date_time = '2017-01-03';
 ```
 
 If you want to change this invoice to be £300, you need to use 'UPDATE'.
 
 ```sql
-update invoices set room_price_per_night = 300.0 where id = <I-FROM-ABOVE>;
+update invoices set total = 300.0 where id = 1;
 ```
 
 #### EXERCISE 1J : Updating data
 
-1. Run SQL from lesson 1C where my surname was entered as OConner. My name is actually O'Connor. Fix it using 'UPDATE'.
+1. Run SQL from lesson 1C where Colm's surname was entered as OConner. His name is actually O'Connor. Fix it using 'UPDATE'.
 
 # HOMEWORK
 

@@ -14,3 +14,5 @@ List of amendments for the next time this is taught:
 --- break down exercise on POST -- or go through it. .run() should be demonsrtated in front of the class before asking them to do it.
 
 --- FOr select in / we didn't give a good enough example.
+
+--- active date -- date after checkin date and checkout date is null or date after checkin date and date before checkout date.

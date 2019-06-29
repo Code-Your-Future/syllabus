@@ -6,13 +6,13 @@
 
 [] - Add more exercises and/or stretch goals - it was very commond for students finish quickly and wait for the others to finish as well.
 
-[] - Make sure there are no commas at the end of any of the create statements.
+[] - Make sure there are no commas at the end of any of the create statements. XXX
 
-[] - Make sure we always use number - not real - as type for floating point values.
+[] - Make sure we always use number - not real - as type for floating point values. N/A
 
-[] - Add brief review and check of the PRAGMA for forreing keys setting, before we start foreign keys exercises.
+[] - Add brief review and check of the PRAGMA for forreing keys setting, before we start foreign keys exercises. N/A
 
-[] - Change the `<replace with actual id>` with an actual id, even if its mocked.
+[] - Change the `<replace with actual id>` with an actual id, even if its mocked. XXX
 
 
 -- Add stretch goals to this lesson.
