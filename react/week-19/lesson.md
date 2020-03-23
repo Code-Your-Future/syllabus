@@ -102,39 +102,9 @@ Now let's convert to using React ([interactive version](http://jsbin.com/recegad
 
 ## JSX
 
-As you can see, React is already helping us a bit by cleaning up some of the verbose vanilla JS APIs. However in a typical React application you would still use a *lot* of the `React.createElement` function. To improve the developer experience the React team developed **JSX**.
-
-JSX is a simple syntax "sugar" that *looks* like HTML, but is actually converted to the `React.createElement` function when you run it.
+JSX is a simple syntax "sugar" that *looks* like HTML. It improves the developer experience writing react as it is actually converted to the `React.createElement` function when you run it.
 
 Using JSX ([interactive version](http://jsbin.com/gekahexige/edit?html,output)):
-
-```html
-<!DOCTYPE html>
-<html>
-<body>
-<script src="https://unpkg.com/react@16.0.0/umd/react.development.js"></script>
-<script src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.development.js"></script>
-<!-- Add Babel script, which compiles JSX to React.createElement -->
-<script src="https://unpkg.com/babel-standalone@6.26.0/babel.js"></script>
-
-<div id="root"></div>
-
-<script type="text/babel">
-    const element = <div>Hello World</div>
-
-    const rootElement = document.getElementById('root')
-    ReactDOM.render(element, rootElement)
-</script>
-
-</body>
-</html>
-```
-
-As you can see, this is much easier to read than both the straight `React.createElement` API and the vanilla JS API. Most people using React use JSX to write their components.
-
-> **Exercises**
-> 1. Change the [JSX example from above](http://jsbin.com/gekahexige/edit?html,output) to instead render a `h1` with an id of `"main-header"` and the text "Hello Ali"
-> 2. Visit the [Babel REPL](https://babeljs.io/repl/#?babili=false&browsers=&build=&builtIns=false&code_lz=DwEwlgbgfAEgpgGwQewAQHVkCcEmAenGiA&debug=false&forceAllTransforms=false&shippedProposals=false&circleciRepo=&evaluate=true&fileSize=false&lineWrap=false&presets=es2015%2Creact%2Cstage-2&prettier=false&targets=&version=6.26.0&envVersion=) and copy/paste the `h1` that you just created
 
 ## Let's Create A React App
 

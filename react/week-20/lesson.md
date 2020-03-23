@@ -5,12 +5,10 @@
 **What will we learn today?**
 
 - [Recap](#recap)
-- [Making an Argument for Props](#making-an-argument-for-props)
+- [Making an Argument for Props](#making-an-argument-for-props)	
 - [What Are Props?](#what-are-props)
 - [Reacting to Changes](#reacting-to-changes)
 - [State](#state)
-- [Functional Components](#functional-components)
-- [Passing Functions as Props](#passing-functions-as-props)
 
 ## Recap
 
@@ -40,46 +38,45 @@ class HelloMentor extends React.Component {
     }
 }
 ```
+## Making an Argument for Props	
 
-## Making an Argument for Props
+ What's the problem with this component? Hint: imagine what a user story might look like for this small application. How might changes to the user story affect changes to the code?	
 
-What's the problem with this component? Hint: imagine what a user story might look like for this small application. How might changes to the user story affect changes to the code?
+ Our components are very inflexible. They cannot say hello to other mentors, and they can only say "hello", not "hi" or "greetings". If our user stories change, for example if we wanted to say hello to a different mentor, we would have to to change the code too. This is easy in our tiny application but for "real" applications this might be more difficult.	
 
-Our components are very inflexible. They cannot say hello to other mentors, and they can only say "hello", not "hi" or "greetings". If our user stories change, for example if we wanted to say hello to a different mentor, we would have to to change the code too. This is easy in our tiny application but for "real" applications this might be more difficult.
+ Instead wouldn't it be good if we could change which mentor we are saying hello to every time we render the component? This is what "props" are for.	
 
-Instead wouldn't it be good if we could change which mentor we are saying hello to every time we render the component? This is what "props" are for.
+ ## What Are Props?	
 
-## What Are Props?
+ Props are what we use in React to pass "arguments" to components. They are very similar to arguments in functions - you can "pass" props to components, and you can use those props in a component.	
 
-Props are what we use in React to pass "arguments" to components. They are very similar to arguments in functions - you can "pass" props to components, and you can use those props in a component.
+ First let's look at passing props to your components ([interactive example](https://stackblitz.com/edit/react-ketrwi?file=index.js)):	
 
-First let's look at passing props to your components ([interactive example](https://stackblitz.com/edit/react-ketrwi?file=index.js)):
+ ```js	
+<Mentor mentor="Kash" />	
+```	
 
-```js
-<Mentor mentor="Kash" />
-```
+ As you can see props are key-value pairs, in this example the key is `mentor` and the value is the string `'Kash'`. We don't have to use strings, we can use any valid JavaScript data like numbers, arrays and objects. Remember that in JSX you can use curly braces (`{` & `}`) to inject data that is not a string:	
 
-As you can see props are key-value pairs, in this example the key is `mentor` and the value is the string `'Kash'`. We don't have to use strings, we can use any valid JavaScript data like numbers, arrays and objects. Remember that in JSX you can use curly braces (`{` & `}`) to inject data that is not a string:
+ ```js	
+<HotelRoom price={123}>	
+```	
 
-```js
-<HotelRoom price={123}>
-```
+ Now let's take a look at using props that we have passed to a component ([interactive example](https://stackblitz.com/edit/react-ketrwi?file=Mentor.js)):	
 
-Now let's take a look at using props that we have passed to a component ([interactive example](https://stackblitz.com/edit/react-ketrwi?file=Mentor.js)):
+ ```js	
+<span>{this.props.mentor}</span>	
+```	
 
-```js
-<span>{this.props.mentor}</span>
-```
+ React gives you access to props via the `this.props` object. We can then inject into our component using curly braces. Because `this.props` is just a regular object, you can also inject into DOM attributes:	
 
-React gives you access to props via the `this.props` object. We can then inject into our component using curly braces. Because `this.props` is just a regular object, you can also inject into DOM attributes:
+ ```js	
+<div id={'my-id-' + this.props.id}>{this.props.content}</div>	
+```	
 
-```js
-<div id={'my-id-' + this.props.id}>{this.props.content}</div>
-```
-
-> **Exercise:**
-> Open the `my-hotel` React application that your created last week
-> 1. Edit the `Logo` component so that the hotel name in the welcome message is passed as a prop
+ > **Exercise:**	
+> Open the `my-hotel` React application that your created last week	
+> 1. Edit the `Logo` component so that the hotel name in the welcome message is passed as a prop	
 > 2. Edit the `SpecialDeals` component so that the array is passed as a prop
 
 ## Reacting to Changes
@@ -248,90 +245,85 @@ class App extends Component {
 > 5. Add a click handler to the button which calls the `addBooking` function
 > 6. Use `this.setState` to increment the number of bookings in state
 
-## Functional Components
+## Functional Components	
 
-So far we have been using the `class` keyword to create React components. There is another way of creating components that is shorter, which are called "functional" components:
+ So far we have been using the `class` keyword to create React components. There is another way of creating components that is shorter, which are called "functional" components:	
 
-```js
-function Greeting(props) {
-    return (
-        <div>Hello {props.name}</div>
-    )
-}
-```
+ ```js	
+function Greeting(props) {	
+    return (	
+        <div>Hello {props.name}</div>	
+    )	
+}	
+```	
 
-Because it is just a function we can make this even shorter:
+ Because it is just a function we can make this even shorter:	
 
-```js
-const Greeting = (props) => <div>Hello {props.name}</div>
-```
+ ```js	
+const Greeting = (props) => <div>Hello {props.name}</div>	
+```	
 
-If we use some destructuring, we can make it shorter again!
+ If we use some destructuring, we can make it shorter again!	
 
-```js
-const Greeting = ({ name }) => <div>Hello {name}</div>
-```
+ ```js	
+const Greeting = ({ name }) => <div>Hello {name}</div>	
+```	
 
-So why don't we always use functional components? Because they can only return JSX (and inject props if there are some). Additionally they cannot hold state or have lifecycle methods (which we'll look at next week).
+ So why don't we always use functional components? Because they can only return JSX (and inject props if there are some). Additionally they cannot hold state or have lifecycle methods (which we'll look at next week).	
 
-In real world applications, the things we want to remember in state follow the "business logic" required by our users. So for example the number of bookings in the exercise above increases when you add a booking. To help us cleanly split up code that performs business logic from code that shows the user interface we split components into "presentational" and "connected" or "connected" components. Often I have components that don't do anything except manage state according to the business rules and render the right "presentational" components.
+ In real world applications, the things we want to remember in state follow the "business logic" required by our users. So for example the number of bookings in the exercise above increases when you add a booking. To help us cleanly split up code that performs business logic from code that shows the user interface we split components into "presentational" and "connected" or "connected" components. Often I have components that don't do anything except manage state according to the business rules and render the right "presentational" components.	
 
-"Connected" or "connected" components usually have some state and handler methods. Because of this they must use the `class` syntax that we have been using so far. "Presentational" components on the other hand don't require the more verbose syntax. Instead they can use the functional syntax.
+ "Connected" or "connected" components usually have some state and handler methods. Because of this they must use the `class` syntax that we have been using so far. "Presentational" components on the other hand don't require the more verbose syntax. Instead they can use the functional syntax.	
 
-> **Exercise:**
-> Open the `my-hotel` React application once again
-> 1. Look at the components we have created so far, and decide which should be converted to functional ("presentational") components
-> 2. Convert these components to functional components
+ > **Exercise:**	
+> Open the `my-hotel` React application once again	
+> 1. Look at the components we have created so far, and decide which should be converted to functional ("presentational") components	
+> 2. Convert these components to functional components	
+ ## Passing Functions as Props	
 
-## Passing Functions as Props
+ Usually we want to change the application state when users interact with our "presentational" components. But as discussed above, we don't want our presentational components to have state, so how do we change state from a presentational component?	
 
-Usually we want to change the application state when users interact with our "presentational" components. But as discussed above, we don't want our presentational components to have state, so how do we change state from a presentational component?
+ Remember that functions in JavaScript are "first class" - that means we can pass a function as a variable and call it elsewhere. This includes React props ([interactive example](https://stackblitz.com/edit/react-bjljxh)):	
 
-Remember that functions in JavaScript are "first class" - that means we can pass a function as a variable and call it elsewhere. This includes React props ([interactive example](https://stackblitz.com/edit/react-bjljxh)):
+ ```js	
+class Counter extends Component {	
+    constructor(props) {	
+        super(props)	
+        this.state = { count: 0 }	
+    }	
+     increment = () => {	
+        this.setState({ count: ++this.state.count })	
+    }	
+     render() {	
+        return (	
+            <div>	
+                {this.state.count}	
+                <FancyButton whenClicked={this.increment} />	
+            </div>	
+        )	
+    }	
+}	
+ const FancyButton = ({ whenClicked }) => {	
+    return (	
+        <button	
+            className="fancy-button"	
+            onClick={whenClicked}	
+        >	
+            Click Me!	
+        </button>	
+    )	
+}	
+```	
 
-```js
-class Counter extends Component {
-    constructor(props) {
-        super(props)
-        this.state = { count: 0 }
-    }
+ What is happening here?	
 
-    increment = () => {
-        this.setState({ count: ++this.state.count })
-    }
+ - The `Counter` component initialises state and an `increment` method	
+- Then the `Counter` component passes the `increment` function as a prop to `FancyButton`	
+- Next the `whenClicked` prop (which is the `increment` function) is attached as a click handler in `FancyButton`	
+- When the button is clicked, React calls the click handler attached via `onClick`. Because we passed the `increment` function as the `whenClicked` prop, the `increment` function will be called	
+- The state in `Counter` will be set to an incremented value	
 
-    render() {
-        return (
-            <div>
-                {this.state.count}
-                <FancyButton whenClicked={this.increment} />
-            </div>
-        )
-    }
-}
-
-const FancyButton = ({ whenClicked }) => {
-    return (
-        <button
-            className="fancy-button"
-            onClick={whenClicked}
-        >
-            Click Me!
-        </button>
-    )
-}
-```
-
-What is happening here?
-
-- The `Counter` component initialises state and an `increment` method
-- Then the `Counter` component passes the `increment` function as a prop to `FancyButton`
-- Next the `whenClicked` prop (which is the `increment` function) is attached as a click handler in `FancyButton`
-- When the button is clicked, React calls the click handler attached via `onClick`. Because we passed the `increment` function as the `whenClicked` prop, the `increment` function will be called
-- The state in `Counter` will be set to an incremented value
-
-This pattern is extremely useful in separating business logic code from user interface code. It is also crucial to the concept of [Lifting State Up](https://reactjs.org/docs/lifting-state-up.html).
-
+ This pattern is extremely useful in separating business logic code from user interface code. It is also crucial to the concept of [Lifting State Up](https://reactjs.org/docs/lifting-state-up.html).	
 
 # Homework
 
