@@ -172,3 +172,5 @@ How to contribute to an open source project on GitHub
 
 - [Tips for creating your own portfolio website](https://skillcrush.com/2015/03/12/impressive-tech-portfolio/)
 - [Career tips from HackYourFuture, a refugee code school in Amsterdam](https://github.com/HackYourFuture/alumni/wiki)
+- [Ultimate Guide to Using GitHub as a Public Portfolio](https://yourbrainoncomputers.com/using-github-to-build-a-portfolio-ultimate-guide/)
+- [How to Become a Software Developer from Scratch](https://yourbrainoncomputers.com/how-to-become-a-software-developer-in-2020/)

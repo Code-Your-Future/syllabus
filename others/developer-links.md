@@ -46,6 +46,8 @@ and improving your skills.
   useful in the life of a developer
 - [Awesome Design Tools](https://flawlessapp.io/designtools) — contains a big
   list of design tools
+- [Programming & Development Tools](https://yourbrainoncomputers.com/17-best-programming-tools-to-boost-your-skills-in-2020/) — curated and focused list of tools 
+  specifically directed at software engineers and programmers
 
 ## Surveys
 
