@@ -193,14 +193,15 @@ A checkbox allows the user to say yes or no to an option. With a checkbox, the u
 
 ---
 
-Checkboxes that are related to each other can be grouped together in a `<fieldset>`. A group of fields is described by a `<legend>`.
+Checkboxes that are related to each other can be grouped together in a `<fieldset>`. A group of fields is described by a `<legend>`. As you can see a fieldset (similar to a field) needs to be inside a form.
 
 ```html
+<form method="POST" action="https://www.example.com">
 <fieldset>
   <legend>What languages do you speak?</legend>
   <label>
     <input type="checkbox" name="language" value="ar">
-    Arabic
+    Arabics
   </label>
   <label>
     <input type="checkbox" name="language" value="es">
@@ -211,8 +212,10 @@ Checkboxes that are related to each other can be grouped together in a `<fieldse
     English
   </label>
 </fieldset>
+</form>
 ```
 
+<form method="POST" action="https://www.example.com">
 <fieldset>
   <legend>What languages do you speak?</legend>
   <label style="margin-right: 1em;">
@@ -228,6 +231,7 @@ Checkboxes that are related to each other can be grouped together in a `<fieldse
     English
   </label>
 </fieldset>
+</form>
 
 ---
 
